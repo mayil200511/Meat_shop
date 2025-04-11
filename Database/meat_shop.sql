@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3305
--- Generation Time: Mar 23, 2025 at 05:01 AM
+-- Generation Time: Apr 11, 2025 at 09:17 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -49,7 +49,46 @@ INSERT INTO `bills` (`bill_no`, `cus_name`, `date`, `cus_phone`, `grand_total`) 
 (250012, 'periyan', '2025-03-17 12:21:00.00', '98755432', 215),
 (250013, 'Cash Customer ', '2025-03-19 10:45:00.00', 'null', 1260),
 (250014, 'Aswak', '2025-03-19 10:49:00.00', '7845086717', 690),
-(250015, 'Cash Customer ', '2025-03-19 10:51:00.00', 'null', 690);
+(250015, 'Cash Customer ', '2025-03-19 10:51:00.00', 'null', 690),
+(250016, 'periyan', '2025-03-24 13:03:00.00', '98755432', 300),
+(250017, 'Cash Customer ', '2025-04-04 23:13:00.00', 'none', 975),
+(250018, 'Mayil', '2025-04-04 23:21:00.00', '8870426718', 2620),
+(250019, 'Cash Customer ', '2025-04-11 23:37:00.00', 'null', 300),
+(250020, 'Mayil', '2025-04-11 23:37:00.00', '8870426718', 1110),
+(250021, 'periyan', '2025-04-11 23:49:00.00', '98755432', 440),
+(250022, 'Cash Customer ', '2025-04-11 23:57:00.00', 'none', 790),
+(250023, 'sundar', '2025-04-12 00:03:00.00', '9087234876', 1060),
+(250024, 'Cash Customer ', '2025-04-12 00:09:00.00', 'null', 1010),
+(250025, 'gokul', '2025-04-12 00:12:00.00', '2147483642', 350),
+(250026, 'Aswak', '2025-04-12 00:13:00.00', '7845086717', 1215),
+(250027, 'Cash Customer ', '2025-04-12 00:26:00.00', 'null', 1440);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bill_items`
+--
+
+CREATE TABLE `bill_items` (
+  `bill_no` int(100) NOT NULL,
+  `s_no` int(100) NOT NULL,
+  `product_name` varchar(25) NOT NULL,
+  `product_quantity` int(10) NOT NULL,
+  `quantity` int(10) NOT NULL,
+  `total_amt` float NOT NULL,
+  `product_price` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `bill_items`
+--
+
+INSERT INTO `bill_items` (`bill_no`, `s_no`, `product_name`, `product_quantity`, `quantity`, `total_amt`, `product_price`) VALUES
+(250019, 1, 'Beef', 81, 1, 300, 300),
+(250021, 1, 'pork', 98, 1, 440, 440),
+(250025, 1, 'prawn ', 94, 1, 350, 350),
+(250027, 1, 'Rabbit', 91, 1, 1000, 1000),
+(250027, 2, 'pork', 95, 1, 440, 440);
 
 -- --------------------------------------------------------
 
@@ -168,14 +207,14 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`product_id`, `product_name`, `product_price`, `product_quantity`) VALUES
-(2, 'Chikken', 215, 63),
-(3, 'Fish', 250, 80),
-(4, 'Beef', 300, 82),
-(5, 'prawn ', 350, 97),
-(6, 'pork', 440, 98),
-(7, 'Rabbit', 1000, 95),
-(15, 'Mutton', 760, 96),
-(23, 'snake', 860, 100);
+(2, 'Chikken', 215, 60),
+(3, 'Fish', 250, 78),
+(4, 'Beef', 300, 78),
+(5, 'prawn ', 350, 92),
+(6, 'pork', 440, 94),
+(7, 'Rabbit', 1000, 90),
+(15, 'Mutton', 760, 88),
+(23, 'snake', 860, 98);
 
 -- --------------------------------------------------------
 
@@ -201,7 +240,8 @@ INSERT INTO `purchases` (`purchase_id`, `distributor_name`, `product_name`, `pro
 (2, 'ranga', 'Rabbit', 12, '2025-03-14', 120000),
 (67, 'Balaji ', 'Chikken', 10, '2025-03-17', 1000),
 (68, 'AB traders', 'Chikken', 10, '2025-03-19', 1200),
-(77, 'Balaji ', 'Chikken', 2, '2025-03-19', 200);
+(77, 'Balaji ', 'Chikken', 2, '2025-03-19', 200),
+(78, 'Murugan poultry farm', 'Chikken', 2, '2025-03-24', 300);
 
 -- --------------------------------------------------------
 
@@ -222,7 +262,8 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`user_id`, `username`, `password`, `user_type`) VALUES
 (1, 'mayil', '12345', 'user'),
-(2, 'Mayil', 'mayil@11', 'admin');
+(2, 'Mayil', 'mayil@11', 'admin'),
+(4, 'siva', 'siva', 'user');
 
 --
 -- Indexes for dumped tables
@@ -323,13 +364,13 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `purchases`
 --
 ALTER TABLE `purchases`
-  MODIFY `purchase_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
+  MODIFY `purchase_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `user_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
