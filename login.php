@@ -26,7 +26,7 @@ session_start();
             if ($row) {
                 if ($row['user_type'] == 'admin') {
                     $_SESSION['username'] = $username;
-                    header("Location: dash.php");
+                    header("Location: Admin/dash.php");
                 } elseif ($row['user_type'] == 'user') {
                     $_SESSION['username'] = $username;
                     header("Location: user_dash/user_dash.php");
