@@ -5,8 +5,8 @@
 
 **ABSTRACT**
 
- 		The objective of the Meat Shop Management System is to automate and streamline the day-to-day operations of a meat shop, helping the owners manage sales, inventory, suppliers, and customer information efficiently.
-   The system will ensure smooth operations, reduce errors, and improve customer service by organizing data in a centralized system.
+The objective of the Meat Shop Management System is to automate and streamline the day-to-day operations of a meat shop, helping the owners manage sales, inventory, suppliers, and customer information efficiently.
+The system will ensure smooth operations, reduce errors, and improve customer service by organizing data in a centralized system.
 The Meat Shop Management System is designed to assist meat shop owners in managing various business processes, including inventory tracking, order management, sales analysis, and supplier coordination. 
 
 **Introduction to Meat Shop Management System:**
@@ -24,19 +24,23 @@ USERNAME:Mayil
 
 password:Mayil@11
 
-**user login****
+**user login**
 
 USERNAME:mayil
 
 password:12345
 
 **Smaple output**
+
 Login
+
 ![image](https://github.com/user-attachments/assets/2c32e114-ffeb-4459-a6b8-51bc78a77549)
 
 Dashboard
+
 ![image](https://github.com/user-attachments/assets/0854b496-f66d-47d5-8a8e-8dec45bc3098)
 
 Billing
+
 ![image](https://github.com/user-attachments/assets/e5c32172-5e56-4129-b2ba-161053397e5b)
 
