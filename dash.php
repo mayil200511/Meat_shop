@@ -93,8 +93,7 @@
                     <img src="image/profile_icon.png" alt="Profile" style="width: 50px; height: 50px;">
                 </button>
                 <div style="display: none; position: absolute; right: 0; background-color: white; border: 1px solid #ccc; border-radius: 0px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 1;" id="dropdownMenu">
-                    <a href="profile.php" style="display: block; padding: 10px; text-decoration: none; color: black;">Profile</a>
-                    <a href="add_user.php" style="display: block; padding: 10px; text-decoration: none; color: black;">Add User</a>
+                    <a href="add_user.php" style="display: block; padding: 10px; text-decoration: none; color: black;">AddI. _User</a>
                
                 </div>
                 </div>
