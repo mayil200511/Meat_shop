@@ -18,6 +18,32 @@ This system aims to automate several key processes, such as inventory management
 
 XAMPP phpMyAdmin is a user-friendly web-based interface for managing MySQL 
 
+**Database connection**
+
+create data base connection using db.php 
+
+<?php
+$servername = "**localhost:3305**";
+$username = "root";
+$password = "";
+$dbname = "meat_shop";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+?>
+
+**"localhost:3305" change this part to "localhost"**
+
+Because i was using server port 3305 but mostly XAMPP using 3306, so you must change this part.
+otherwise this code doesn't work.
+
+
 **ADMIN LOGIN**
 
 USERNAME:Mayil
