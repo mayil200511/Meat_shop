@@ -1,6 +1,6 @@
 <?php
 // new_entry.php
-include 'db.php';  
+include 'db.php'; 
 
 // Fetch last bill number from database
 $sql = "SELECT MAX(bill_no) as last_bill_no FROM bills";
@@ -11,50 +11,6 @@ $stmt->fetch();
 $stmt->close();
 $bill_no = $last_bill_no ? $last_bill_no + 1 : 250000;
 
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $bill_no = $_POST['bill_no'];
-    $date = $_POST['date'];
-    $cus_name = $_POST['cus_name'];
-    $cus_phone = $_POST['cus_phone'];
-    $grand_total = 0;
-    if (is_array($_POST['total_amt'])) {
-        foreach ($_POST['total_amt'] as $total_amt) {
-            $grand_total += $total_amt;
-        }
-    }
-
-    // Insert into bills table
-    $sql = "INSERT INTO bills (bill_no, date, cus_name, cus_phone, grand_total) VALUES (?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssss", $bill_no, $date, $cus_name, $cus_phone, $grand_total);
-    $stmt->execute();
-    //$stmt->close();
- 
-    
-    // Insert into bill_items table
-    if (is_array($_POST['s_no'])) {
-        $stmt = $conn->prepare("INSERT INTO bill_items (bill_no, s_no, product_name, product_quantity, quantity, product_price, total_amt) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        if (is_array($_POST['s_no'])) {
-            foreach ($_POST['s_no'] as $index => $s_no) {
-                $s_no = $_POST['s_no'][$index];
-                $product_name = $_POST['product_name'][$index];
-                $product_quantity = $_POST['product_quantity'][$index];
-                $quantity = $_POST['quantity'][$index];
-                $product_price = $_POST['product_price'][$index];
-                $total_amt = $_POST['total_amt'][$index];
-
-                $stmt->bind_param("sssssss", $bill_no, $s_no, $product_name, $product_quantity, $quantity, $product_price, $total_amt);
-                $stmt->execute();
-                $s_no++;
-            }
-        }
-        $stmt->close();
-    }
-
-    echo '<script>alert("Bill saved successfully!")</script>';
-}
-// Fetch products
 $products = [];
 $sql = "SELECT product_name, product_quantity, product_price FROM products";
 $stmt = $conn->prepare($sql);
@@ -127,7 +83,9 @@ $conn->close();
     <img src="image/product_list_icon.png" alt="Sales list"  style="height: 60px; width: 60px;"onclick="window.location.href='sales_entry.php'">
 </div>
     <div class="container">
-    <form action="new_entry.php" method="post">
+    <form id="billForm" action="save_bill.php" method="post">
+        <div style="text-align: center; font-size: 30px; margin-bottom: 20px;">
+            <strong>Meat Shop</strong>
         <table align="center" border="1">
         <tr>
             <th colspan="5" align="right" style="background-color:gray;">Bill No:</th>
@@ -165,8 +123,7 @@ $conn->close();
             <th>S No</th><th>Product Name</th><th>Stock</th><th>Quantity</th><th>Price</th><th>Total Amt</th>
         </tr>
         <tr>
-            <td><input type="text" name="s_no[]" value="1" readonly></td>
-            <td>
+            <td><input type="text" name="s_no[]" value="1" readonly></td><td>
                 <select name="product_name[]" required>
                     <option value="">Select Product</option>
                     <?php foreach ($products as $product): ?>
@@ -202,7 +159,7 @@ $conn->close();
                 var table = document.querySelector('table');
                 var newRow = table.insertRow(table.rows.length);
                 newRow.innerHTML = `
-                    <td><input type="text" name="s_no" value="${table.rows.length - 5}" readonly></td>
+                    <td><input type="text" name="s_no[]" value="${table.rows.length - 5}" readonly></td>
                     <td>
                         <select name="product_name[]" required>
                             <option value="">Select Product</option>
@@ -235,7 +192,7 @@ $conn->close();
                     document.querySelectorAll('[name="total_amt[]"]').forEach(function(input) {
                         grandTotal += Number(input.value);
                     });
-                    document.getElementById('grand_total').textContent = grandTotal;
+                    document.getElementById('grand_total   ').textContent = grandTotal;
                 });
             }
         });
@@ -274,100 +231,131 @@ $conn->close();
         </table>    
     </div>
 
-    <div>
-    <div style="position: fixed; bottom: 10px; left: 10px; ">
-        <button onclick="printBill()" style="font-size: 20px; padding: 5px 10px;">Print Bill (F5)</button>
-        <button onclick="saveBill()" style="font-size: 20px; padding: 5px 10px;">Save Bill (F6)</button>
-        
-    </div>
-   
-    <script>
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'F5') {
-                event.preventDefault();
-                printBill();
-            } else if (event.key === 'F6','F5') {
-                event.preventDefault();
-                saveBill();
-            }
-        });
+    <div style="position: fixed; bottom: 10px; left: 50%;">
+    <button type="button" onclick="PrintBill(),saveBill()" style="font-size: 20px; padding: 5px 10px;">Print Bill(F6)</button>
 
-        function printBill() {
-            var billContent = `
-            <h2 style="font-size: 30px; text-align: center;">Meat shop</h2>
-            <p><strong>Bill No:</strong> ${document.querySelector('[name="bill_no"]').value}</p>
-            <p><strong>Date/Time:</strong> ${document.querySelector('[name="date"]').value}</p>
-            <p><strong>Customer Name:</strong> ${document.querySelector('[name="cus_name"]').value}</p>
-            <p><strong>Customer Phone:</strong> ${document.querySelector('[name="cus_phone"]').value}</p>
-            <table border="1" style="width: 100%; border-collapse: collapse;">
-            <tr>
-            <th>S No</th><th>Product Name</th><th>Price</th><th>Quantity</th><th>Total Amt</th>
-            </tr>`;
+        </div>     
+        <script>
+    // Add event listener for F5 key to trigger PrintBill and saveBill functions         
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'F6') { // Use F6 instead of F5
+        event.preventDefault();
+        PrintBill();
+        saveBill();
+        }
+    });
+        function PrintBill() {
+            // Collecting bill number and date
+            const billNo = document.querySelector('[name="bill_no"]').value;
+            const date = document.querySelector('[name="date"]').value;
+            const cusName = document.querySelector('[name="cus_name"]').value;
+            const cusPhone = document.querySelector('[name="cus_phone"]').value;
 
+
+            // Initialize bill content
+            let billContent = `
+                <h2 style="font-size: 30px; text-align: center;">Meat Shop</h2>
+                <p><strong>Bill No:</strong> ${billNo}</p>
+                <p><strong>Date/Time:</strong> ${date}</p>
+                <p><strong>Customer Name:</strong> ${cusName}</p>
+                <p><strong>Customer Phone:</strong> ${cusPhone}</p>
+                <p style="text-align: center; font-size: 20px;">Bill Details</p>               
+                <table border="1" style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <th>S No</th><th>Product Name</th><th>Price</th><th>Quantity</th><th>Total Amt</th>
+                    </tr>`;
+
+            // Loop through table rows to get product data
+            let totalAmount = 0;
             document.querySelectorAll('table tr').forEach(function(row, index) {
-            if (index > 4) { // Skip header rows
-            var s_no = row.querySelector('[name="s_no[]"]') ? row.querySelector('[name="s_no[]"]').value : '';
-            var product_name = row.querySelector('[name="product_name[]"]') ? row.querySelector('[name="product_name[]"]').value : '';
-            var product_price = row.querySelector('[name="product_price[]"]') ? row.querySelector('[name="product_price[]"]').value : '';
-            var quantity = row.querySelector('[name="quantity[]"]') ? row.querySelector('[name="quantity[]"]').value : '';
-            var total_amt = row.querySelector('[name="total_amt[]"]') ? row.querySelector('[name="total_amt[]"]').value : '';
+                if (index > 4) { // Skip header rows
+                    const sNo = row.querySelector('[name="s_no[]"]') ? row.querySelector('[name="s_no[]"]').value : '';
+                    const productName = row.querySelector('[name="product_name[]"]') ? row.querySelector('[name="product_name[]"]').value : '';
+                    const price = parseFloat(row.querySelector('[name="product_price[]"]') ? row.querySelector('[name="product_price[]"]').value : 0);
+                    const quantity = parseInt(row.querySelector('[name="quantity[]"]') ? row.querySelector('[name="quantity[]"]').value : 0);
+                    const totalAmt = price * quantity;
 
-            if (product_name) {
-            billContent += `
-                <tr>
-                <td>${s_no}</td>
-                <td>${product_name}</td>
-                <td>${product_price}</td>
-                <td>${quantity}</td>
-                <td>${total_amt}</td>
-                </tr>`;
-            }
-            }
+                    if (productName && price && quantity) {
+                        billContent += `
+                            <tr>
+                                <td>${sNo}</td>
+                                <td>${productName}</td>
+                                <td>${price.toFixed(2)}</td>
+                                <td>${quantity}</td>
+                                <td>${totalAmt.toFixed(2)}</td>
+                            </tr>`;
+                        totalAmount += totalAmt;
+                    }
+                }
             });
 
+            const grandTotal = document.getElementById('grand_total') ? document.getElementById('grand_total').textContent : totalAmount.toFixed(2);
             billContent += `
-            </table>
-            <div style="text-align: right; font-size: 20px; margin-top: 20px;">
-            <strong>Grand Total:</strong> ${document.getElementById('grand_total').textContent}
-            </div>
-            <div style="text-align: center; font-size: 18px; margin-top: 10px;">
-            <em>Thanks For Shopping!..</em>
-            </div>`;
+                </table>
+                <div style="text-align: right; font-size: 20px; margin-top: 20px;">
+                    <strong>Grand Total:</strong> ${grandTotal}
+                </div>
+                <div style="text-align: center; font-size: 18px; margin-top: 10px;">
+                    <em>Thanks For Shopping!..</em>
+                </div>`;
 
-            var printWindow = window.open('', '', 'height=600,width=700');
+            const printWindow = window.open('', '', 'height=600,width=800');
             printWindow.document.write('<html><head><title>Print Bill</title></head><body>');
             printWindow.document.write(billContent);
             printWindow.document.write('</body></html>');
             printWindow.document.close();
             printWindow.print();
         }
-
         function saveBill() {
-            var form = document.querySelector('form');
-            form.submit();
+    const form = document.getElementById('billForm');
+    const formData = new FormData(form);
+
+    fetch('save_bill.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Bill saved successfully!');
+            // Update bill number
+            document.querySelector('[name="bill_no"]').value = data.new_bill_no;
+            // Clear item rows and reset form
+            resetForm();
+        } else {
+            alert('Error saving bill.');
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to save bill.');
+    });
+}
+function resetForm() {
+    // Clear product rows except first
+    const table = document.querySelector('table');
+    while (table.rows.length > 7) {
+        table.deleteRow(-1);
+    }
+
+    // Reset first row
+    const inputs = table.querySelectorAll('input');
+    inputs.forEach(input => {
+        if (input.name !== 'bill_no' && input.name !== 'date' && input.name !== 'cus_phone') {
+            input.value = '';
+        }
+    });
+
+    // Reset customer selection
+    document.getElementById('cus_name').value = '';
+    document.getElementById('cus_phone').value = '';
+    document.getElementById('grand_total').textContent = '0';
+
+    // Update date
+    document.querySelector('[name="date"]').value = getCurrentDateTime();
+}
+ 
     </script>
-    <script>
-        document.querySelector('form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the default form submission
-
-            var formData = new FormData(this);
-
-            fetch('new_entry.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(data => {
-                alert('Bill saved successfully!');
-                // Optionally, you can reset the form or update the page content here
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-    </script>
-
     </div>
 
 </body>
