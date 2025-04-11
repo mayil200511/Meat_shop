@@ -56,7 +56,8 @@ Login
 
 Dashboard
 
-![image](https://github.com/user-attachments/assets/0854b496-f66d-47d5-8a8e-8dec45bc3098)
+![2025-04-12](https://github.com/user-attachments/assets/88ac289e-0e52-4405-a902-86bd839371fa)
+
 
 Billing
 
