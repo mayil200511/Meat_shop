@@ -23,8 +23,11 @@ XAMPP phpMyAdmin is a user-friendly web-based interface for managing MySQL
 create data base connection using db.php 
 
 $servername = "**localhost:3305**";
+
 $username = "root";
+
 $password = "";
+
 $dbname = "meat_shop";
 
 **"localhost:3305" change this part to "localhost"**
